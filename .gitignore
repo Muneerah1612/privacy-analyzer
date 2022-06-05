@@ -1,0 +1,8 @@
+.env
+env
+db.sqlite3
+./migrations
+.cpython-39.pyc
+/site
+*.pyc
+.idea
