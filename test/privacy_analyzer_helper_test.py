@@ -1,5 +1,4 @@
 from unittest import TestCase
-
 from privacy_analyzer_helper import fetch
 
 
