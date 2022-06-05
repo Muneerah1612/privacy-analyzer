@@ -60,3 +60,22 @@ def check_for_address_reuse(addresses, network):
             }
             message.append(response)
     return message
+
+
+def check_for_largest_amount_address(outputs):
+    largest_output = outputs[0]
+    lowest_output = outputs[0]
+
+    for output in outputs:
+        if lowest_output['amount'] > output['amount']:
+            lowest_output = output
+        elif largest_output['amount'] < output['amount']:
+            largest_output = output
+
+    if 5 * lowest_output['amount'] < largest_output['amount']:
+        possible_change = {largest_output['address']: largest_output['amount']}
+        response = {"address": possible_change, "message": "this a likely a change address"}
+    else:
+        response = {}
+
+    return response
