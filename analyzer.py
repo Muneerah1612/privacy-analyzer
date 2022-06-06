@@ -85,3 +85,36 @@ def check_for_largest_amount_address(outputs):
 
     return response
 
+
+
+def check_for_equal_output(inputs, outputs=None):
+
+    if outputs is None:
+        outputs = dict()
+    input_address_total_amount = dict()
+    count = 0
+    for tx_input in inputs:
+        if input_address_total_amount.get(tx_input['address']) is not None:
+            input_address_total_amount[tx_input['address']] = input_address_total_amount.get(
+                tx_input['address']) + tx_input['amount']
+        else:
+            input_address_total_amount.update(
+                {tx_input['address']: tx_input['amount']})
+
+    sorted_input_amount = sorted(input_address_total_amount.items(
+    ), key=lambda input_amount: input_amount[1], reverse=True)
+
+    sorted_output_amount = sorted(
+        outputs, key=lambda output_amount: output_amount['amount'], reverse=True)
+
+    possible_change_output = []
+    for output_amount in sorted_output_amount:
+        if 0.8 <= output_amount.get('amount') / sorted_input_amount[count][1] < 1:
+            possible_change_output.append(output_amount)
+        count = count + 1
+
+        if count == len(sorted_input_amount):
+            break
+
+    return possible_change_output
+

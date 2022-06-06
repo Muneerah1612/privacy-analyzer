@@ -1,6 +1,6 @@
 import unittest
 
-from analyzer import check_for_address_reuse, check_for_largest_amount_address
+from analyzer import check_for_address_reuse, check_for_largest_amount_address, check_for_equal_output
 
 
 class MyTestCase(unittest.TestCase):
@@ -45,3 +45,52 @@ class MyTestCase(unittest.TestCase):
         ]
         want = {'address': {'add4': 9000}, 'message': 'this a likely a change address'}
         self.assertEqual(check_for_largest_amount_address(outputs), want)
+
+    def test_check_equal_amount(self):
+        outputs = [
+            {
+                'address': 'add1',
+                'amount': 10000
+            },
+            {
+                'address': 'add2',
+                'amount': 20000
+            },
+            {
+                'address': 'add3',
+                'amount': 40000
+            },
+            {
+                'address': 'add4',
+                'amount': 90000
+            },
+        ]
+
+        inputs = [
+            {
+                'address': 'add_1',
+                'amount': 20000
+            },
+            {
+                'address': 'add_1',
+                'amount': 50000
+            },
+            {
+                'address': 'add_1',
+                'amount': 30000
+            },
+            {
+                'address': 'add_2',
+                'amount': 30000
+            },
+            {
+                'address': 'add_2',
+                'amount': 20000
+            },
+            {
+                'address': 'add_3',
+                'amount': 10000
+            },
+        ]
+        want = [{'address': 'add4', 'amount': 90000}, {'address': 'add3', 'amount': 40000}]
+        self.assertEqual(check_for_equal_output(inputs, outputs), want)
