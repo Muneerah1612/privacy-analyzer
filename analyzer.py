@@ -39,7 +39,7 @@ def check_for_script_type(addresses, transaction_ids, output_indexes):
         pass
     else:
         address_type = []
-        tx_input_script_type = fetch(transaction_ids, output_indexes)['address_type']
+        tx_input_script_type = fetch_transaction(transaction_ids, output_indexes)['address_type']
         for address in addresses:
             addr=[address for k,v in TESTNET_SCRIPT_TYPE.items() if address[0] ==v and k==tx_input_script_type]
             address_type.extend(addr)

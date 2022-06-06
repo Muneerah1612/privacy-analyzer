@@ -1,6 +1,6 @@
 import unittest
 
-from analyzer import check_for_address_reuse, check_for_largest_amount_address
+from analyzer import check_for_address_reuse, check_for_largest_amount_address, check_for_round_number
 
 
 class MyTestCase(unittest.TestCase):
@@ -45,3 +45,8 @@ class MyTestCase(unittest.TestCase):
         ]
         want = {'address': {'add4': 9000}, 'message': 'this a likely a change address'}
         self.assertEqual(check_for_largest_amount_address(outputs), want)
+
+    def test_round_number(self):
+        tx_outputs = [{'address': "213456", "amount": 2000}, {"address": "23ert", 'amount': 13456}]
+        want = "23ert seem like a change address, it violates the round number privacy."
+        self.assertEqual(check_for_round_number(tx_outputs), want)

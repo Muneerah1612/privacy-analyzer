@@ -1,7 +1,7 @@
 from unittest import TestCase
 
 from analyzer import *
-from privacy_analyzer_helper import fetch_translation, get_address_transaction_count
+from privacy_analyzer_helper import fetch_transaction, get_address_transaction_count
 
 
 class HelperTest(TestCase):
@@ -12,14 +12,11 @@ class HelperTest(TestCase):
 
         want = [{'address': '2N6dM8W9Ri7nZnHzMWkEEw8goxwVFvJU19L', 'address_type': 'p2sh'}]
 
-        self.assertEqual(fetch(tx_id, input_indexes), want)
+        self.assertEqual(fetch_transaction(tx_id, input_indexes), want)
 
-    def test_round_number(self):
-        tx_outputs = [{'address': "213456", "amount": 2000}, {"address": "23ert", 'amount': 13456}]
-        want = "23ert seem like a change address, it violates the round number privacy."
-        self.assertEqual(check_for_round_number(tx_outputs), want)
 
-        self.assertEqual(fetch_translation(tx_id, input_indexes), want)
+
+    
 
     def test_get_address_transaction_count(self):
         address = '2N6dM8W9Ri7nZnHzMWkEEw8goxwVFvJU19L'
