@@ -1,4 +1,3 @@
-from requests import *
 from privacy_analyzer_helper import *
 
 MAINNET_SCRIPT_TYPE = {
@@ -34,18 +33,19 @@ def check_for_round_number(tx_outputs):
 
 
 def check_for_script_type(addresses, transaction_ids, output_indexes):
+    
     if addresses[0][0] == addresses[1][0]:
         pass
     else:
         address_type = []
+        tx_input_script_type = fetch(transaction_ids, output_indexes)['address_type']
         for address in addresses:
-            for i in TESTNET_SCRIPT_TYPE:
-                if address[0] == TESTNET_SCRIPT_TYPE.get(i):
-                    address_type.append(i)
-        tx_input_script_type = fetch(transaction_ids, output_indexes)
-        for script_type in address_type:
-            if script_type == tx_input_script_type['address_type']:
-                response: str = f'{address} seem like a change address, it has same script type as the transaction input'
-                return response
+            addr=[address for k,v in TESTNET_SCRIPT_TYPE.items() if address[0] ==v and k==tx_input_script_type]
+            address_type.extend(addr)
+        response: str = f'{address_type[0]} seem like a change address, it has same script type as the transaction input'
+        return response
 
-
+def check_for_exact_payment_amount(tx_inputs, tx_outputs):
+    if len(tx_inputs) > 1 and len(tx_outputs) == 1:
+        response = 'This transaction is likely indicating that bitcoins did not move hand'
+        return response
