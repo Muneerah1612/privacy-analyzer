@@ -32,6 +32,7 @@ def check_for_round_number(tx_outputs):
         pass
 
 
+
 def check_for_script_type(addresses, transaction_ids, output_indexes):
     
     if addresses[0][0] == addresses[1][0]:
@@ -49,3 +50,38 @@ def check_for_exact_payment_amount(tx_inputs, tx_outputs):
     if len(tx_inputs) > 1 and len(tx_outputs) == 1:
         response = 'This transaction is likely indicating that bitcoins did not move hand'
         return response
+
+
+
+def check_for_address_reuse(addresses, network):
+    message = []
+
+    for address in addresses:
+        txn_count = get_address_transaction_count(address, network)
+        if txn_count > 0:
+            response = {
+                address: f"this address has been reused for {txn_count} transactions",
+                'recommendation': 'it is preferred not to use this address for privacy concerns'
+            }
+            message.append(response)
+    return message
+
+
+def check_for_largest_amount_address(outputs):
+    largest_output = outputs[0]
+    lowest_output = outputs[0]
+
+    for output in outputs:
+        if lowest_output['amount'] > output['amount']:
+            lowest_output = output
+        elif largest_output['amount'] < output['amount']:
+            largest_output = output
+
+    if 5 * lowest_output['amount'] < largest_output['amount']:
+        possible_change = {largest_output['address']: largest_output['amount']}
+        response = {"address": possible_change, "message": "this a likely a change address"}
+    else:
+        response = {}
+
+    return response
+
