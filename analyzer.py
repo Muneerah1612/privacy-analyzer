@@ -32,20 +32,25 @@ def check_for_round_number(tx_outputs):
         pass
 
 
-def check_for_script_type(address, transaction_ids, output_indexes):
-    if address[0][0] == address[1][0]:
+
+def check_for_script_type(addresses, transaction_ids, output_indexes):
+    
+    if addresses[0][0] == addresses[1][0]:
         pass
     else:
         address_type = []
-        for add in address:
-            for i in TESTNET_SCRIPT_TYPE:
-                if add[0] == TESTNET_SCRIPT_TYPE.get(i):
-                    address_type.append(i)
-        tx_input_script_type = fetch_translation(transaction_ids, output_indexes)
-        for type in address_type:
-            if type == tx_input_script_type['address_type']:
-                response = f'{add} seem like a change address, it has same script type as the transaction input'
-                return response
+        tx_input_script_type = fetch(transaction_ids, output_indexes)['address_type']
+        for address in addresses:
+            addr=[address for k,v in TESTNET_SCRIPT_TYPE.items() if address[0] ==v and k==tx_input_script_type]
+            address_type.extend(addr)
+        response: str = f'{address_type[0]} seem like a change address, it has same script type as the transaction input'
+        return response
+
+def check_for_exact_payment_amount(tx_inputs, tx_outputs):
+    if len(tx_inputs) > 1 and len(tx_outputs) == 1:
+        response = 'This transaction is likely indicating that bitcoins did not move hand'
+        return response
+
 
 
 def check_for_address_reuse(addresses, network):
@@ -81,6 +86,7 @@ def check_for_largest_amount_address(outputs):
     return response
 
 
+
 def check_for_equal_output(inputs, outputs=None):
 
     if outputs is None:
@@ -111,3 +117,4 @@ def check_for_equal_output(inputs, outputs=None):
             break
 
     return possible_change_output
+
