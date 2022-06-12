@@ -35,3 +35,7 @@ def get_address_transaction_count(address, network='testnet'):
         'tx_count']
 
     return address_tx_count
+
+
+def close_session():
+    requests.Session().close()

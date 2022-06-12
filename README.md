@@ -26,7 +26,7 @@ The following packages would be installed with the package
 1. Install dependencies `pip install requirements.txt`
 
 ### Running Tests
-
+`coverage run --source=privacy-analyzer -m unittest -v`
 
 
 ## Some Examples
