@@ -1,6 +1,7 @@
 import unittest
 
-from analyzer import check_for_address_reuse, check_for_largest_amount_address, check_for_equal_output
+from analyzer import check_for_address_reuse, check_for_largest_amount_address, check_for_equal_output, \
+    check_inputs_from_same_transaction
 
 
 class MyTestCase(unittest.TestCase):
@@ -69,28 +70,101 @@ class MyTestCase(unittest.TestCase):
         inputs = [
             {
                 'address': 'add_1',
-                'amount': 20000
+                'amount': 20000,
+                'txn_id': 'id1'
             },
             {
                 'address': 'add_1',
-                'amount': 50000
+                'amount': 50000,
+                'txn_id': 'id2'
             },
             {
                 'address': 'add_1',
-                'amount': 30000
+                'amount': 30000,
+                'txn_id': 'id1'
             },
             {
                 'address': 'add_2',
-                'amount': 30000
+                'amount': 30000,
+                'txn_id': 'id3',
             },
             {
                 'address': 'add_2',
-                'amount': 20000
+                'amount': 20000,
+                'txn_id': 'id3'
+
             },
             {
                 'address': 'add_3',
-                'amount': 10000
+                'amount': 10000,
+                'txn_id': 'id1'
             },
         ]
         want = [{'address': 'add4', 'amount': 90000}, {'address': 'add3', 'amount': 40000}]
         self.assertEqual(check_for_equal_output(inputs, outputs), want)
+
+    def test_check_inputs_from_same_transaction(self):
+        inputs = [
+            {
+                'address': 'add_1',
+                'amount': 20000,
+                'txn_id': 'id1'
+            },
+            {
+                'address': 'add_2',
+                'amount': 50000,
+                'txn_id': 'id2'
+            },
+            {
+                'address': 'add_3',
+                'amount': 30000,
+                'txn_id': 'id1'
+            },
+            {
+                'address': 'add_4',
+                'amount': 30000,
+                'txn_id': 'id3',
+            },
+            {
+                'address': 'add_5',
+                'amount': 20000,
+                'txn_id': 'id3'
+
+            },
+            {
+                'address': 'add_6',
+                'amount': 10000,
+                'txn_id': 'id1'
+            },
+        ]
+
+        want = [
+            {
+                'address': 'add_1',
+                'amount': 20000,
+                'txn_id': 'id1'
+            },
+            {
+                'address': 'add_3',
+                'amount': 30000,
+                'txn_id': 'id1'
+            },
+            {
+                'address': 'add_4',
+                'amount': 30000,
+                'txn_id': 'id3',
+            },
+            {
+                'address': 'add_5',
+                'amount': 20000,
+                'txn_id': 'id3'
+
+            },
+            {
+                'address': 'add_6',
+                'amount': 10000,
+                'txn_id': 'id1'
+            },
+        ]
+
+        self.assertEqual(want, check_inputs_from_same_transaction(inputs))

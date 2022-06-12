@@ -3,7 +3,7 @@ import requests
 TESTNET_URL = 'https://blockstream.info/testnet/api'
 
 
-def fetch_translation(transaction_ids, output_indexes, network='testnet'):
+def fetch_transaction(transaction_ids, output_indexes, network='testnet'):
     network_url = ''
     if network == 'testnet':
         network_url = TESTNET_URL
