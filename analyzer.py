@@ -113,3 +113,17 @@ def check_for_equal_output(inputs, outputs=None):
             break
 
     return possible_change_output
+
+
+def check_inputs_from_same_transaction(inputs):
+    unique_inputs_dict = {}
+    privacy_list = []
+    for input in inputs:
+        if input['txn_id'] in unique_inputs_dict.keys():
+            if unique_inputs_dict.get(input['txn_id']) not in privacy_list:
+                privacy_list.append(unique_inputs_dict.get(input['txn_id']))
+            privacy_list.append(input)
+        else:
+            unique_inputs_dict.update({input['txn_id']: input})
+
+    return privacy_list
